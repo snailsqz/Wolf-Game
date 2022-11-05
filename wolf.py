@@ -75,7 +75,7 @@ def on_mouse_down(pos,button):
 ########################################
         
 def update():
-    global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep,arrowspeed,lives,potionnum
+    global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep,arrowspeed,lives,potionnum,time
     
     #Wolf walking
     if keyboard.w: 
@@ -137,22 +137,26 @@ def update():
                     potion.y = -300
 
 
-        #Game Over
-        if(Game_Over == True):
-            music.fadeout(2)
-            sheep.x = 0
-            sheep.y = 0
-            arrow.x = 1600
-            arrow.y = 1600
-            arrow2.x = 1600
-            arrow2.y = 1600 
-            arrow3.x = 1600
-            arrow3.y = 1600
-            maxsheep = 1
-            lives = 3
-            Speed = 1
 
-    #Press Q and E to Return
+
+
+        #Game Over
+    if(Game_Over == True):
+        music.fadeout(1)
+        sheep.x = 0
+        sheep.y = 0
+        arrow.x = 1600
+        arrow.y = 1600
+        arrow2.x = 1600
+        arrow2.y = 1600 
+        arrow3.x = 1600
+        arrow3.y = 1600
+        maxsheep = 1
+        lives = 3
+        Speed = 1
+        clock.unschedule(count_time)
+
+    #Press Q and E to Return Arrows
     if keyboard.q:
         x1 = wolf.x
         y1 = wolf.y
@@ -187,9 +191,12 @@ def update():
         Game_Over = False
         Score = 0
         time = 0
+        clock.schedule_interval(count_time,1.0)
         wolf.pos = (WIDTH/2,HEIGHT/2)
         sheep.x = 0
         sheep.y = 0
+        potion.x = -800
+        potion.y = -800
         arrow.x = WIDTH/2 - 20
         arrow.y = HEIGHT/2
         arrow2.x = WIDTH/2 + 20
@@ -206,9 +213,6 @@ def update():
     if keyboard.g:
         screen.surface = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    
-
-
 
 ##Main Program
 TITLE = 'Kill em all wolf'
@@ -219,7 +223,7 @@ wolf = Actor('wolf2',(WIDTH/2,HEIGHT/2))
 arrow = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow2 = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow3 = Actor('red2',(WIDTH/2,HEIGHT/2))
-potion = Actor('potion1',(-300,-300))
+potion = Actor('potion4',(-300,-300))
 
 
 music.play('music2')
