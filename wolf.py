@@ -16,32 +16,44 @@ def draw():
         screen.draw.text(f'Your Score : {Score}',(245,300),fontsize = 50)
         screen.draw.text('Press R to Try again',(245,350),fontsize = 50)
     else:
-        screen.fill((0,171,102))
-        screen.draw.text(f'Score : {Score}',(5,10),fontsize = 30)
-        screen.draw.text(f'Lives : {lives}', (930,10),fontsize = 30)
-        screen.draw.text(f'Time : {time}',(500,10),fontsize = 30)
-        wolf.draw()
-        arrow.draw()
-        arrow2.draw()
-        arrow3.draw()
-        potion.draw()
-        for sheep in sheepar:
-            sheep.draw()
+        if Game_Start == False:
+            start.draw()
+            screen.draw.text('Press M to Start',(500,500),fontsize = 60)
+            
+        else:
+            forest.draw()
+            screen.draw.text(f'Score : {Score}',(5,10),fontsize = 30)
+            screen.draw.text(f'Lives : {lives}', (930,10),fontsize = 30)
+            screen.draw.text(f'Time : {time}',(500,10),fontsize = 30)
+            wolf.draw()
+            arrow.draw()
+            arrow2.draw()
+            arrow3.draw()
+            potion.draw()
+            for sheep in sheepar:
+                sheep.draw()
 
             
 ########################################
            
 def sheepspawn():
     global Speed,maxsheep
-
     for i in range(maxsheep):
         sheepar.append(Actor('sheep1'))
         
     for sheep in sheepar:
         sheep.x = choice([0,32,64,128,256,768,896,1024])
-        sheep.y = choice([0,48,96,192,576,672,768])
+        sheep.y = choice([0,48,96,192,576,672,720])
         
 ########################################
+        
+def GameOver():
+    if(Game_Over == True):
+        music.fadeout(1)
+        clock.unschedule(count_time)
+
+#######################################
+        
 def count_time():
     global time
     time += 1
@@ -52,8 +64,8 @@ def count_time():
 
 def potionspawn():
     
-    potion.x = randint(75,930)
-    potion.y = randint(80,690)
+    potion.x = randint(410,900)
+    potion.y = randint(240,430)
 
 ########################################
 
@@ -75,8 +87,15 @@ def on_mouse_down(pos,button):
 ########################################
         
 def update():
-    global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep,arrowspeed,lives,potionnum,time
-    
+    global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep,arrowspeed,lives,potionnum,time,Game_Start,arrow3speed
+
+    if Game_Start == False:
+       if keyboard.m:
+            Game_Start = True
+            clock.schedule_interval(count_time,1.0)
+            arrowhelper()
+            sheepspawn()
+
     #Wolf walking
     if keyboard.w: 
         wolf.y -= 2
@@ -87,6 +106,7 @@ def update():
     if keyboard.d:
         wolf.x += 2
 
+
     for sheep in sheepar:
         if Game_Over != True:
             #check collision
@@ -96,6 +116,7 @@ def update():
                 sounds.hurt.play()
                 if lives == 0:
                     Game_Over = True
+                    GameOver()
                 
             try:
                 if(arrow.colliderect(sheep) or arrow2.colliderect(sheep) or arrow3.colliderect(sheep)):
@@ -118,17 +139,21 @@ def update():
                 sheep.y -= Speed
 
             #animation
-            animate(arrow3, pos=(sheep.pos),duration = 1,tween='decelerate')
+            animate(arrow3, pos=(sheep.pos),duration = arrow3speed,tween='decelerate')
             wolf.angle = wolf.angle_to(arrow3.pos)
             arrow.angle = arrow.angle_to(wolf) - 180
             arrow2.angle = arrow2.angle_to(wolf) - 180
             arrow3.angle = arrow3.angle_to(sheep.pos)
 
-            if len(sheepar) == 0: 
-                maxsheep += 1
-                sheepspawn()
-                Speed += 0.2
 
+            #Sheep death
+            if len(sheepar) == 0:
+                maxsheep += 1
+                clock.schedule_unique(sheepspawn, 0.5)
+                Speed += 0.1
+
+
+            #Potion things
             if(lives < 3):
                 if(wolf.colliderect(potion)):
                     sounds.potion.play()
@@ -136,25 +161,7 @@ def update():
                     potion.x = -300
                     potion.y = -300
 
-
-
-
-
-        #Game Over
-    if(Game_Over == True):
-        music.fadeout(1)
-        sheep.x = 0
-        sheep.y = 0
-        arrow.x = 1600
-        arrow.y = 1600
-        arrow2.x = 1600
-        arrow2.y = 1600 
-        arrow3.x = 1600
-        arrow3.y = 1600
-        maxsheep = 1
-        lives = 3
-        Speed = 1
-        clock.unschedule(count_time)
+    
 
     #Press Q and E to Return Arrows
     if keyboard.q:
@@ -191,10 +198,11 @@ def update():
         Game_Over = False
         Score = 0
         time = 0
+        lives = 3
+        Speed = 1
         clock.schedule_interval(count_time,1.0)
         wolf.pos = (WIDTH/2,HEIGHT/2)
-        sheep.x = 0
-        sheep.y = 0
+        maxsheep = 1
         potion.x = -800
         potion.y = -800
         arrow.x = WIDTH/2 - 20
@@ -216,17 +224,17 @@ def update():
 
 ##Main Program
 TITLE = 'Kill em all wolf'
-WIDTH = 1024
-HEIGHT = 768
+WIDTH = 1280
+HEIGHT = 720
 Game_Over = False
+Game_Start = False
 wolf = Actor('wolf2',(WIDTH/2,HEIGHT/2))
 arrow = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow2 = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow3 = Actor('red2',(WIDTH/2,HEIGHT/2))
 potion = Actor('potion4',(-300,-300))
-
-
-music.play('music2')
+start = Actor('test1')
+forest = Actor('map')
 
         
 x1 = WIDTH/2 - 20
@@ -239,11 +247,8 @@ sheepar = []
 potionar = []
 maxsheep = 1
 arrowspeed = 5
+arrow3speed = 1
 lives = 3
 Speed = 1
 time = 0
-clock.schedule_interval(count_time,1.0)
-
-arrowhelper()
-sheepspawn()
 pgzrun.go()
