@@ -291,6 +291,7 @@ y1 = HEIGHT/2
 x2 = WIDTH/2 + 20
 y2 = HEIGHT/2
 
+music.set_volume(0.5)
 Highscore = 0
 Score = 0
 damage = []
