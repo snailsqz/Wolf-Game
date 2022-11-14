@@ -22,21 +22,22 @@ def draw():
             
         else:
             forest.draw()
-            screen.draw.text(f'Score : {Score}',(20,10),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'High Score : {Highscore}',(20,100),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'Lives : {lives}', (1100,100),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'Time : {time}',(1100,10),fontname = "sunshine",fontsize = 50)
-            wolf.draw()
-            arrow.draw()
-            arrow2.draw()
-            arrow3.draw()
-            potion.draw()
             for sheep in sheepar:
                 sheep.draw()
             for damaged in damage:
                 damaged.draw()
             for health in heal:
                 health.draw()
+            wolf.draw()
+            arrow.draw()
+            arrow2.draw()
+            arrow3.draw()
+            potion.draw()
+            screen.draw.text(f'Score : {Score}',(20,10),fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'High Score : {Highscore}',(20,100),fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'Lives : {lives}', (1100,100),fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'Time : {time}',(1100,10),fontname = "sunshine",fontsize = 50)
+            
             
 ########################################
            
@@ -46,8 +47,8 @@ def sheepspawn():
         sheepar.append(Actor('sheep1'))
         
     for sheep in sheepar:
-        sheep.x = choice([0,32,64,128,256,768,896,1024])
-        sheep.y = choice([0,48,96,192,576,672,720])
+        sheep.x = choice([0,32,64,128,256,768,896,900,950,1000,1024])
+        sheep.y = choice([0,48,96,192,576,672,690,700,710,720])
         
 ########################################
         
