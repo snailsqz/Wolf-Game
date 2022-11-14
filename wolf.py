@@ -35,6 +35,8 @@ def draw():
                 sheep.draw()
             for damaged in damage:
                 damaged.draw()
+            for health in heal:
+                health.draw()
             
 ########################################
            
@@ -103,17 +105,23 @@ def musicdef():
 
 ########################################
 def damaged():
-    damage.append(Actor('damage4'))
+    damage.append(Actor('halfheart2'))
     for damaged in damage:
         damaged.x = wolf.x
-        damaged.y = wolf.y
-    clock.schedule_unique(cooldown, 0.2)
-
+        damaged.y = wolf.y - 30
+    clock.schedule_unique(cooldown, 0.5)
+########################################
+def healing():
+    heal.append(Actor('heart2'))
+    for health in heal:
+        health.x = wolf.x
+        health.y = wolf.y - 30
+    clock.schedule_unique(cooldown, 0.5)
 ########################################
 def cooldown():
+    heal.clear()
     damage.clear()
-
-
+########################################
 def update():
     global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep
     global arrowspeed,lives,potionnum,time,Game_Start,Highscore
@@ -163,7 +171,7 @@ def update():
                     sounds.bow.play()
                     Score += 1
             except:
-                 if len(sheepar) == 1:
+                 if len(sheepar) < 1:
                     maxsheep += 1
                     sheepspawn()            
                 
@@ -197,6 +205,7 @@ def update():
     if(lives < 3):
         if(wolf.colliderect(potion)):
             sounds.potion.play()
+            healing()
             lives += 1
             potion.x = -300
             potion.y = -300
@@ -285,6 +294,7 @@ y2 = HEIGHT/2
 Highscore = 0
 Score = 0
 damage = []
+heal = []
 sheepar = []
 potionar = []
 maxsheep = 1
