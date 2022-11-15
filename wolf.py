@@ -285,7 +285,7 @@ def update():
 
 
 ##Main Program
-TITLE = 'Kill em all wolf'
+TITLE = 'Hungry!'
 WIDTH = 1280
 HEIGHT = 720
 Game_Over = False
