@@ -8,17 +8,17 @@ Press Q and E to Return an arrow
 Press F to Fullscreen
 Press G to Exit Fullscreen
 Press R to Retry
-
 '''
+textcolor = (148, 37, 99)
 def draw():
     if Game_Over:
-        screen.fill('black')
-        screen.draw.text(f'Your Score : {Score}',(390,300),fontname = "sunshine",fontsize = 50)
-        screen.draw.text('Press R to Try again',(390,350),fontname = "sunshine",fontsize = 50)
+        forest.draw()
+        screen.draw.text(f'Your Score : {Score}',(470,300),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text('Press R to Try again',(470,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
     else:
         if Game_Start == False:
             start.draw()
-            screen.draw.text('Press M to Start',(500,500),fontname = "sunshine",fontsize = 60)
+            screen.draw.text('Press M to Start',(500,600),color = 'blue',fontname = "sunshine",fontsize = 60)
             
         else:
             forest.draw()
@@ -33,10 +33,10 @@ def draw():
             arrow2.draw()
             arrow3.draw()
             potion.draw()
-            screen.draw.text(f'Score : {Score}',(20,10),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'High Score : {Highscore}',(20,100),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'Lives : {lives}', (1100,100),fontname = "sunshine",fontsize = 50)
-            screen.draw.text(f'Time : {time}',(1100,10),fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'Score : {Score}',(20,10),color = textcolor,fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'High Score : {Highscore}',(20,100),color = textcolor,fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'Lives : {lives}', (1100,100),color = textcolor,fontname = "sunshine",fontsize = 50)
+            screen.draw.text(f'Time : {time}',(1100,10),color = textcolor,fontname = "sunshine",fontsize = 50)
             
             
 ########################################
@@ -44,7 +44,7 @@ def draw():
 def sheepspawn():
     global Speed,maxsheep
     for i in range(maxsheep):
-        sheepar.append(Actor('sheep1'))
+        sheepar.append(Actor('sheep1_2'))
         
     for sheep in sheepar:
         sheep.x = choice([0,32,64,128,256,768,896,900,950,1000,1024])
@@ -55,7 +55,9 @@ def sheepspawn():
 def GameOver():
     if(Game_Over == True):
         clock.unschedule(count_time)
-        music.fadeout(2)
+        music.fadeout(0.2)
+        music.set_volume(0.2)
+        music.play('gameover')
         
 
 #######################################
@@ -92,7 +94,8 @@ def on_mouse_down(pos,button):
 ########################################
 
 def musicdef():
-    musicindex = randint(1,5)
+    musicindex = randint(1,9)
+    music.set_volume(0.5)
     if musicindex == 1:
         music.play('music2')
     elif musicindex == 2:
@@ -103,6 +106,14 @@ def musicdef():
         music.play('music5')
     elif musicindex == 5:
         music.play('music6')
+    elif musicindex == 6:
+        music.play('music7')
+    elif musicindex == 7:
+        music.play('music8')
+    elif musicindex == 8:
+        music.play('music9')
+    elif musicindex == 9:
+        music.play('music10')
 
 ########################################
 def damaged():
@@ -165,6 +176,7 @@ def update():
                 if lives == 0:
                     Game_Over = True
                     GameOver()
+            sheep.angle = sheep.angle_to(wolf.pos)
                 
             try:
                 if(arrow.colliderect(sheep) or arrow2.colliderect(sheep) or arrow3.colliderect(sheep)):
@@ -245,6 +257,7 @@ def update():
         Game_Over = False
         if Score > Highscore:
             Highscore = Score
+        music.fadeout(1)
         musicdef()
         Score = 0
         time = 0
@@ -277,14 +290,13 @@ WIDTH = 1280
 HEIGHT = 720
 Game_Over = False
 Game_Start = False
-wolf = Actor('wolf2',(WIDTH/2,HEIGHT/2))
-wolfhurt = Actor('wolfhurt2')
+wolf = Actor('wolf7',(WIDTH/2,HEIGHT/2))
 arrow = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow2 = Actor('red2',(WIDTH/2,HEIGHT/2))
 arrow3 = Actor('red2',(WIDTH/2,HEIGHT/2))
 potion = Actor('potion4',(-300,-300))
-start = Actor('test1')
-forest = Actor('map')
+start = Actor('openning')
+forest = Actor('map4')
 music.play('music1')
         
 x1 = WIDTH/2 - 20
