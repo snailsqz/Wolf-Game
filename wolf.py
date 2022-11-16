@@ -13,8 +13,9 @@ textcolor = (148, 37, 99)
 def draw():
     if Game_Over:
         forest.draw()
-        screen.draw.text(f'Your Score : {Score}',(470,300),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
-        screen.draw.text('Press R to Try again',(470,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text(f'You Survied for {time} seconds',(420,300),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text(f'Your Score : {Score}',(500,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text('Press R to Try again',(470,400),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
     else:
         if Game_Start == False:
             start.draw()
@@ -37,7 +38,13 @@ def draw():
             screen.draw.text(f'High Score : {Highscore}',(20,100),color = textcolor,fontname = "sunshine",fontsize = 50)
             screen.draw.text(f'Lives : {lives}', (1100,100),color = textcolor,fontname = "sunshine",fontsize = 50)
             screen.draw.text(f'Time : {time}',(1100,10),color = textcolor,fontname = "sunshine",fontsize = 50)
-            
+            screen.draw.text('WASD to Move', (1050,490),color = textcolor,fontname = "sunshine",fontsize = 25)
+            screen.draw.text('Q&E to Return Arrows', (1050,530),color = textcolor,fontname = "sunshine",fontsize = 25)
+            screen.draw.text('Left Click to move an arrow', (1050,570),color = textcolor,fontname = "sunshine",fontsize = 25)
+            screen.draw.text('Right Click to move an arrow', (1050,610),color = textcolor,fontname = "sunshine",fontsize = 25)
+            screen.draw.text('F to Full Screen', (1050,650),color = textcolor,fontname = "sunshine",fontsize = 25)
+            screen.draw.text('G to Exit Full Screen', (1050,690),color = textcolor,fontname = "sunshine",fontsize = 25)
+ 
             
 ########################################
            
@@ -181,7 +188,7 @@ def update():
             try:
                 if(arrow.colliderect(sheep) or arrow2.colliderect(sheep) or arrow3.colliderect(sheep)):
                     sheepar.remove(sheep)
-                    sounds.bow.play()
+                    sounds.attack4.play()
                     Score += 1
             except:
                  if len(sheepar) < 1:
@@ -209,7 +216,7 @@ def update():
             #Sheep death
             if len(sheepar) == 0:
                 maxsheep += 1
-                clock.schedule_unique(sheepspawn, 0.7)
+                clock.schedule_unique(sheepspawn, 0.8)
                 Speed += 0.1
 
 
@@ -291,9 +298,9 @@ HEIGHT = 720
 Game_Over = False
 Game_Start = False
 wolf = Actor('wolf7',(WIDTH/2,HEIGHT/2))
-arrow = Actor('red2',(WIDTH/2,HEIGHT/2))
-arrow2 = Actor('red2',(WIDTH/2,HEIGHT/2))
-arrow3 = Actor('red2',(WIDTH/2,HEIGHT/2))
+arrow = Actor('bone3',(WIDTH/2,HEIGHT/2))
+arrow2 = Actor('bone4',(WIDTH/2,HEIGHT/2))
+arrow3 = Actor('bone5',(WIDTH/2,HEIGHT/2))
 potion = Actor('potion4',(-300,-300))
 start = Actor('openning')
 forest = Actor('map4')
