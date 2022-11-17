@@ -1,6 +1,7 @@
 import pgzrun
 from random import randint,choice
 import pygame
+import shelve
 '''
 Press WASD to move
 Press Left click and Right click to move an arrow
@@ -55,11 +56,17 @@ def sheepspawn():
         
 ########################################      
 def GameOver():
+    global Highscore
     if Game_Over:
         clock.unschedule(count_time)
         music.fadeout(0.2)
         music.set_volume(0.2)
         music.play('gameover')
+        if Score > Highscore:
+            d = shelve.open('score.txt')
+            d['score'] = Score
+            d.close()
+            Highscore = Score
         
 #######################################      
 def count_time():
@@ -131,6 +138,7 @@ def damaged():
     clock.schedule_unique(cooldown, 0.5)
 ########################################
 def healing():
+    global lives
     heal.append(Actor('heart2'))
     lives += 1
     for health in heal:
@@ -146,8 +154,6 @@ def restart():
     global Game_Over,Highscore,Score,time,lives,Speed
     global maxsheep,wolf,bone1,bone2,bone3
     Game_Over = False
-    if Score > Highscore:
-        Highscore = Score
     music.fadeout(1)
     musicdef()
     Score = 0
@@ -301,14 +307,18 @@ potion = Actor('potion4',(-300,-300))
 start = Actor('openning')
 forest = Actor('map4')
 
-#for arrows
 x1 = WIDTH/2 - 20
 y1 = HEIGHT/2
 x2 = WIDTH/2 + 20
 y2 = HEIGHT/2
 
 music.set_volume(0.5)
-Highscore = 0
+d = shelve.open('score.txt')
+try :
+    Highscore = d['score']
+except:
+    Highscore = 0
+d.close()
 Score = 0
 damage = []
 heal = []
