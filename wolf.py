@@ -46,7 +46,6 @@ def draw():
             
 ########################################         
 def sheepspawn():
-    global Speed,maxsheep
     for i in range(maxsheep):
         sheepar.append(Actor('sheep1_2'))
         
@@ -56,7 +55,7 @@ def sheepspawn():
         
 ########################################      
 def GameOver():
-    if(Game_Over == True):
+    if Game_Over:
         clock.unschedule(count_time)
         music.fadeout(0.2)
         music.set_volume(0.2)
@@ -81,7 +80,6 @@ def potioncolli():
         if(wolf.colliderect(potion)):
             sounds.potion.play()
             healing()
-            lives += 1
             potion.x = -300
             potion.y = -300
     
@@ -93,14 +91,13 @@ def bonehelper():
     
 ########################################  
 def on_mouse_down(pos,button):
-    global x1,y1,x2,y2,bonespeed
+    global x1,y1,x2,y2,bonespeed1,bonespeed2
     if button == mouse.LEFT :
         (x1,y1) = pos
-        bonespeed = 5
+        bonespeed1 = 5
     if button == mouse.RIGHT :
         (x2,y2) = pos
-        bonespeed = 5
-        
+        bonespeed2 = 5
 ########################################
 def musicdef():
     musicindex = randint(1,9)
@@ -127,6 +124,7 @@ def musicdef():
 ########################################
 def damaged():
     damage.append(Actor('halfheart2'))
+    sounds.attack2.play()
     for damaged in damage:
         damaged.x = wolf.x
         damaged.y = wolf.y - 30
@@ -134,6 +132,7 @@ def damaged():
 ########################################
 def healing():
     heal.append(Actor('heart2'))
+    lives += 1
     for health in heal:
         health.x = wolf.x
         health.y = wolf.y - 30
@@ -143,9 +142,34 @@ def cooldown():
     heal.clear()
     damage.clear()
 ########################################
+def restart():
+    global Game_Over,Highscore,Score,time,lives,Speed
+    global maxsheep,wolf,bone1,bone2,bone3
+    Game_Over = False
+    if Score > Highscore:
+        Highscore = Score
+    music.fadeout(1)
+    musicdef()
+    Score = 0
+    time = 0
+    lives = 3
+    Speed = 1
+    clock.schedule_interval(count_time,1.0)
+    wolf.pos = (WIDTH/2,HEIGHT/2)
+    maxsheep = 1
+    potion.x = -800
+    potion.y = -800
+    bone1.x = WIDTH/2 - 20
+    bone1.y = HEIGHT/2
+    bone2.x = WIDTH/2 + 20
+    bone2.y = HEIGHT/2
+    sheepar.clear()
+    bonehelper()
+    sheepspawn()
+########################################
 def update():
     global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep
-    global bonespeed,lives,potionnum,time,Game_Start,Highscore
+    global bonespeed1,bonespeed2,lives,potionnum,time,Game_Start,Highscore
     if Game_Start == False:
        if keyboard.m:
             Game_Start = True
@@ -153,10 +177,9 @@ def update():
             music.fadeout(1)
             musicdef()
             bonehelper()
-            sheepspawn()
+            clock.schedule_unique(sheepspawn, 1.5)
 
     #Wolf walking
-
     og_x = wolf.x
     og_y = wolf.y
     
@@ -175,13 +198,12 @@ def update():
 
     
     for sheep in sheepar:
-        if Game_Over != True:
             #check collision
+        if Game_Over != True:
             if(sheep.colliderect(wolf)):
                 sheepar.remove(sheep)
                 damaged()
                 lives -= 1
-                sounds.attack2.play()
                 if lives == 0:
                     Game_Over = True
                     GameOver()
@@ -193,7 +215,7 @@ def update():
                     Score += 1
             except:
                     maxsheep += 1
-                    sheepspawn()            
+                    clock.schedule_unique(sheepspawn, 1.5)           
                 
             #Sheep Chasing
             if sheep.x < wolf.x:
@@ -216,65 +238,45 @@ def update():
             #Sheep death
             if len(sheepar) == 0:
                 maxsheep += 1
-                clock.schedule_unique(sheepspawn, 0.8)
+                clock.schedule_unique(sheepspawn, 0.99)
                 Speed += 0.1
 
     potioncolli() # potion colliderect
 
     #bone movement
     if bone1.x < x1:
-        bone1.x += bonespeed
+        bone1.x += bonespeed1
     if bone1.x > x1:
-        bone1.x -= bonespeed
+        bone1.x -= bonespeed1
     if bone1.y < y1:
-        bone1.y += bonespeed
+        bone1.y += bonespeed1
     if bone1.y > y1:
-        bone1.y -= bonespeed
+        bone1.y -= bonespeed1
 
     if bone2.x < x2:
-        bone2.x += bonespeed
+        bone2.x += bonespeed2
     if bone2.x > x2:
-        bone2.x -= bonespeed
+        bone2.x -= bonespeed2
     if bone2.y < y2:
-        bone2.y += bonespeed
+        bone2.y += bonespeed2
     if bone2.y > y2:
-        bone2.y -= bonespeed
+        bone2.y -= bonespeed2
 
     
     #Press Q and E to Return Arrows
     if keyboard.q:
         x1 = wolf.x
         y1 = wolf.y
-        bonespeed = 20
+        bonespeed1 = 20
     if keyboard.e:
         x2 = wolf.x
         y2 = wolf.y
-        bonespeed = 20
+        bonespeed2 = 20
 
       
     #Press R to Restart Game
     if(keyboard.r and Game_Over == True):
-        Game_Over = False
-        if Score > Highscore:
-            Highscore = Score
-        music.fadeout(1)
-        musicdef()
-        Score = 0
-        time = 0
-        lives = 3
-        Speed = 1
-        clock.schedule_interval(count_time,1.0)
-        wolf.pos = (WIDTH/2,HEIGHT/2)
-        maxsheep = 1
-        potion.x = -800
-        potion.y = -800
-        bone1.x = WIDTH/2 - 20
-        bone1.y = HEIGHT/2
-        bone2.x = WIDTH/2 + 20
-        bone2.y = HEIGHT/2
-        sheepar.clear()
-        bonehelper()
-        sheepspawn()
+        restart()
 
 
     #FullScreen
@@ -290,6 +292,7 @@ WIDTH = 1280
 HEIGHT = 720
 Game_Over = False
 Game_Start = False
+music.play('music1')
 wolf = Actor('wolf7',(WIDTH/2,HEIGHT/2))
 bone1 = Actor('bone3',(WIDTH/2,HEIGHT/2))
 bone2 = Actor('bone4',(WIDTH/2,HEIGHT/2))
@@ -297,7 +300,6 @@ bone3 = Actor('bone5',(WIDTH/2,HEIGHT/2))
 potion = Actor('potion4',(-300,-300))
 start = Actor('openning')
 forest = Actor('map4')
-music.play('music1')
 
 #for arrows
 x1 = WIDTH/2 - 20
@@ -311,9 +313,9 @@ Score = 0
 damage = []
 heal = []
 sheepar = []
-potionar = []
 maxsheep = 1
-bonespeed = 5
+bonespeed1 = 5
+bonespeed2 = 5
 lives = 3
 Speed = 1
 time = 0
