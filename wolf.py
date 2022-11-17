@@ -14,7 +14,7 @@ def draw():
     if Game_Over:
         forest.draw()
         screen.draw.text(f'You Survied for {time} seconds',(420,300),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
-        screen.draw.text(f'Your Score : {Score}',(500,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text(f'Your Score : {Score}',(510,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
         screen.draw.text('Press R to Try again',(470,400),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
     else:
         if Game_Start == False:
@@ -82,6 +82,18 @@ def potionspawn():
     potion.y = randint(240,430)
 
 ########################################
+def potioncolli():
+    global lives
+    if(lives < 3):
+        if(wolf.colliderect(potion)):
+            sounds.potion.play()
+            healing()
+            lives += 1
+            potion.x = -300
+            potion.y = -300
+    
+
+########################################
 
 def arrowhelper():
     arrow3.x = wolf.x
@@ -97,6 +109,23 @@ def on_mouse_down(pos,button):
     if button == mouse.RIGHT :
         (x2,y2) = pos
         arrowspeed = 5
+    if arrow.x < x1:
+        arrow.x += arrowspeed
+    if arrow.x > x1:
+        arrow.x -= arrowspeed
+    if arrow.y < y1:
+        arrow.y += arrowspeed
+    if arrow.y > y1:
+        arrow.y -= arrowspeed
+
+    if arrow2.x < x2:
+        arrow2.x += arrowspeed
+    if arrow2.x > x2:
+        arrow2.x -= arrowspeed
+    if arrow2.y < y2:
+        arrow2.y += arrowspeed
+    if arrow2.y > y2:
+        arrow2.y -= arrowspeed
 
 ########################################
 
@@ -183,7 +212,6 @@ def update():
                 if lives == 0:
                     Game_Over = True
                     GameOver()
-            sheep.angle = sheep.angle_to(wolf.pos)
                 
             try:
                 if(arrow.colliderect(sheep) or arrow2.colliderect(sheep) or arrow3.colliderect(sheep)):
@@ -206,6 +234,7 @@ def update():
                 sheep.y -= Speed
 
             #animation
+            sheep.angle = sheep.angle_to(wolf.pos)
             animate(arrow3, pos=(sheep.pos),duration = 1,tween='decelerate')
             wolf.angle = wolf.angle_to(arrow3.pos)
             arrow.angle = arrow.angle_to(wolf) - 180
@@ -219,16 +248,9 @@ def update():
                 clock.schedule_unique(sheepspawn, 0.8)
                 Speed += 0.1
 
-
+    potioncolli() # potion colliderect
     
-    #Potion things
-    if(lives < 3):
-        if(wolf.colliderect(potion)):
-            sounds.potion.play()
-            healing()
-            lives += 1
-            potion.x = -300
-            potion.y = -300
+    
     #Press Q and E to Return Arrows
     if keyboard.q:
         x1 = wolf.x
@@ -239,7 +261,7 @@ def update():
         y2 = wolf.y
         arrowspeed = 10
     
-    #Arrow Standby
+    #Arrow Speed
     if arrow.x < x1:
         arrow.x += arrowspeed
     if arrow.x > x1:
