@@ -14,13 +14,12 @@ def draw():
     if Game_Over:
         forest.draw()
         screen.draw.text(f'You Survied for {time} seconds',(420,300),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
-        screen.draw.text(f'Your Score : {Score}',(510,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
+        screen.draw.text(f'Your Score : {Score}',(500,350),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
         screen.draw.text('Press R to Try again',(470,400),color = (34, 44, 60),fontname = "sunshine",fontsize = 50)
     else:
         if Game_Start == False:
             start.draw()
             screen.draw.text('Press M to Start',(500,600),color = 'blue',fontname = "sunshine",fontsize = 60)
-            
         else:
             forest.draw()
             for sheep in sheepar:
@@ -30,9 +29,9 @@ def draw():
             for health in heal:
                 health.draw()
             wolf.draw()
-            arrow.draw()
-            arrow2.draw()
-            arrow3.draw()
+            bone1.draw()
+            bone2.draw()
+            bone3.draw()
             potion.draw()
             screen.draw.text(f'Score : {Score}',(20,10),color = textcolor,fontname = "sunshine",fontsize = 50)
             screen.draw.text(f'High Score : {Highscore}',(20,100),color = textcolor,fontname = "sunshine",fontsize = 50)
@@ -44,10 +43,8 @@ def draw():
             screen.draw.text('Right Click to move an arrow', (1050,610),color = textcolor,fontname = "sunshine",fontsize = 25)
             screen.draw.text('F to Full Screen', (1050,650),color = textcolor,fontname = "sunshine",fontsize = 25)
             screen.draw.text('G to Exit Full Screen', (1050,690),color = textcolor,fontname = "sunshine",fontsize = 25)
- 
             
-########################################
-           
+########################################         
 def sheepspawn():
     global Speed,maxsheep
     for i in range(maxsheep):
@@ -55,10 +52,9 @@ def sheepspawn():
         
     for sheep in sheepar:
         sheep.x = choice([0,32,64,128,256,768,896,900,950,1000,1024])
-        sheep.y = choice([0,48,96,192,576,672,690,700,710,720])
+        sheep.y = choice([0,48,96,128,192,576,672,690,700,710,720])
         
-########################################
-        
+########################################      
 def GameOver():
     if(Game_Over == True):
         clock.unschedule(count_time)
@@ -66,9 +62,7 @@ def GameOver():
         music.set_volume(0.2)
         music.play('gameover')
         
-
-#######################################
-        
+#######################################      
 def count_time():
     global time
     time += 1
@@ -76,7 +70,6 @@ def count_time():
         potionspawn()
 
 ########################################
-
 def potionspawn():
     potion.x = randint(410,900)
     potion.y = randint(240,430)
@@ -92,43 +85,23 @@ def potioncolli():
             potion.x = -300
             potion.y = -300
     
-
 ########################################
-
-def arrowhelper():
-    arrow3.x = wolf.x
-    arrow3.y = wolf.y
+def bonehelper():
+    global bone3
+    bone3.x = wolf.x
+    bone3.y = wolf.y
     
-########################################
-    
+########################################  
 def on_mouse_down(pos,button):
-    global x1,y1,x2,y2,arrowspeed
+    global x1,y1,x2,y2,bonespeed
     if button == mouse.LEFT :
         (x1,y1) = pos
-        arrowspeed = 5
+        bonespeed = 5
     if button == mouse.RIGHT :
         (x2,y2) = pos
-        arrowspeed = 5
-    if arrow.x < x1:
-        arrow.x += arrowspeed
-    if arrow.x > x1:
-        arrow.x -= arrowspeed
-    if arrow.y < y1:
-        arrow.y += arrowspeed
-    if arrow.y > y1:
-        arrow.y -= arrowspeed
-
-    if arrow2.x < x2:
-        arrow2.x += arrowspeed
-    if arrow2.x > x2:
-        arrow2.x -= arrowspeed
-    if arrow2.y < y2:
-        arrow2.y += arrowspeed
-    if arrow2.y > y2:
-        arrow2.y -= arrowspeed
-
+        bonespeed = 5
+        
 ########################################
-
 def musicdef():
     musicindex = randint(1,9)
     music.set_volume(0.5)
@@ -172,14 +145,14 @@ def cooldown():
 ########################################
 def update():
     global Score,Game_Over,Speed,bullet,x1,y1,x2,y2,ar,maxsheep
-    global arrowspeed,lives,potionnum,time,Game_Start,Highscore
+    global bonespeed,lives,potionnum,time,Game_Start,Highscore
     if Game_Start == False:
        if keyboard.m:
             Game_Start = True
             clock.schedule_interval(count_time,1.0)
             music.fadeout(1)
             musicdef()
-            arrowhelper()
+            bonehelper()
             sheepspawn()
 
     #Wolf walking
@@ -214,12 +187,11 @@ def update():
                     GameOver()
                 
             try:
-                if(arrow.colliderect(sheep) or arrow2.colliderect(sheep) or arrow3.colliderect(sheep)):
+                if(bone1.colliderect(sheep) or bone2.colliderect(sheep) or bone3.colliderect(sheep)):
                     sheepar.remove(sheep)
                     sounds.attack4.play()
                     Score += 1
             except:
-                 if len(sheepar) < 1:
                     maxsheep += 1
                     sheepspawn()            
                 
@@ -235,12 +207,11 @@ def update():
 
             #animation
             sheep.angle = sheep.angle_to(wolf.pos)
-            animate(arrow3, pos=(sheep.pos),duration = 1,tween='decelerate')
-            wolf.angle = wolf.angle_to(arrow3.pos)
-            arrow.angle = arrow.angle_to(wolf) - 180
-            arrow2.angle = arrow2.angle_to(wolf) - 180
-            arrow3.angle = arrow3.angle_to(sheep.pos)
-
+            animate(bone3, pos=(sheep.pos),duration = 1,tween='decelerate')
+            wolf.angle = wolf.angle_to(bone3.pos)
+            bone1.angle = bone1.angle_to(wolf) - 180
+            bone2.angle = bone2.angle_to(wolf) - 180
+            bone3.angle = bone3.angle_to(sheep.pos)
 
             #Sheep death
             if len(sheepar) == 0:
@@ -249,36 +220,36 @@ def update():
                 Speed += 0.1
 
     potioncolli() # potion colliderect
-    
+
+    #bone movement
+    if bone1.x < x1:
+        bone1.x += bonespeed
+    if bone1.x > x1:
+        bone1.x -= bonespeed
+    if bone1.y < y1:
+        bone1.y += bonespeed
+    if bone1.y > y1:
+        bone1.y -= bonespeed
+
+    if bone2.x < x2:
+        bone2.x += bonespeed
+    if bone2.x > x2:
+        bone2.x -= bonespeed
+    if bone2.y < y2:
+        bone2.y += bonespeed
+    if bone2.y > y2:
+        bone2.y -= bonespeed
+
     
     #Press Q and E to Return Arrows
     if keyboard.q:
         x1 = wolf.x
         y1 = wolf.y
-        arrowspeed = 10
+        bonespeed = 20
     if keyboard.e:
         x2 = wolf.x
         y2 = wolf.y
-        arrowspeed = 10
-    
-    #Arrow Speed
-    if arrow.x < x1:
-        arrow.x += arrowspeed
-    if arrow.x > x1:
-        arrow.x -= arrowspeed
-    if arrow.y < y1:
-        arrow.y += arrowspeed
-    if arrow.y > y1:
-        arrow.y -= arrowspeed
-
-    if arrow2.x < x2:
-        arrow2.x += arrowspeed
-    if arrow2.x > x2:
-        arrow2.x -= arrowspeed
-    if arrow2.y < y2:
-        arrow2.y += arrowspeed
-    if arrow2.y > y2:
-        arrow2.y -= arrowspeed
+        bonespeed = 20
 
       
     #Press R to Restart Game
@@ -297,13 +268,13 @@ def update():
         maxsheep = 1
         potion.x = -800
         potion.y = -800
-        arrow.x = WIDTH/2 - 20
-        arrow.y = HEIGHT/2
-        arrow2.x = WIDTH/2 + 20
-        arrow2.y = HEIGHT/2
+        bone1.x = WIDTH/2 - 20
+        bone1.y = HEIGHT/2
+        bone2.x = WIDTH/2 + 20
+        bone2.y = HEIGHT/2
         sheepar.clear()
+        bonehelper()
         sheepspawn()
-        arrowhelper()
 
 
     #FullScreen
@@ -320,14 +291,15 @@ HEIGHT = 720
 Game_Over = False
 Game_Start = False
 wolf = Actor('wolf7',(WIDTH/2,HEIGHT/2))
-arrow = Actor('bone3',(WIDTH/2,HEIGHT/2))
-arrow2 = Actor('bone4',(WIDTH/2,HEIGHT/2))
-arrow3 = Actor('bone5',(WIDTH/2,HEIGHT/2))
+bone1 = Actor('bone3',(WIDTH/2,HEIGHT/2))
+bone2 = Actor('bone4',(WIDTH/2,HEIGHT/2))
+bone3 = Actor('bone5',(WIDTH/2,HEIGHT/2))
 potion = Actor('potion4',(-300,-300))
 start = Actor('openning')
 forest = Actor('map4')
 music.play('music1')
-        
+
+#for arrows
 x1 = WIDTH/2 - 20
 y1 = HEIGHT/2
 x2 = WIDTH/2 + 20
@@ -341,7 +313,7 @@ heal = []
 sheepar = []
 potionar = []
 maxsheep = 1
-arrowspeed = 5
+bonespeed = 5
 lives = 3
 Speed = 1
 time = 0
