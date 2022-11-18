@@ -9,6 +9,7 @@ Press Q and E to Return an arrow
 Press F to Fullscreen
 Press G to Exit Fullscreen
 Press R to Retry
+plub and bambi the tester
 '''
 textcolor = (148, 37, 99)
 def draw():
